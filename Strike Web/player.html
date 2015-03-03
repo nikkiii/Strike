@@ -1,7 +1,6 @@
 <html>
 
 <head>
-
     <meta HTTP-EQUIV="content-type" CONTENT="text/html; charset=UTF-8">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -37,6 +36,8 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+	<script src="js/jquery-1.11.0.js"></script>
+
     <script language="JavaScript" type="text/JavaScript">
 
         function getXMLHTTP() {
@@ -57,14 +58,7 @@
         }
 
         function MakeRequest(req) {
-            var httpRequest = getXMLHTTP();
-
-            try {
-                httpRequest.open("GET", req, true);
-                httpRequest.send(null);
-            }
-            catch (e) {
-            }
+			$.get(req, function(res) {});
         }
 
         function urlencode(s) {
@@ -105,32 +99,15 @@
             }
         };
 
-        var httpRequestStatus;
-
-        function OnReadyStateChange() {
-            if (httpRequestStatus && httpRequestStatus.readyState == 4 && httpRequestStatus.responseText) {
-                if (httpRequestStatus.responseText.charAt(0) != "<") eval(httpRequestStatus.responseText);
-                else {
-                    alert(httpRequestStatus.responseText);
-                }
-                httpRequestStatus = null;
-            }
-        }
-
         function StatusLoop() {
-            if (!httpRequestStatus || httpRequestStatus.readyState == 0) {
-                httpRequestStatus = getXMLHTTP();
-
-                try {
-                    httpRequestStatus.open("GET", 'status.html', true);
-                    httpRequestStatus.onreadystatechange = OnReadyStateChange;
-                    httpRequestStatus.send(null);
-                }
-                catch (e) {
-                }
-            }
-
-            setTimeout("StatusLoop()", 500);
+			$.get('status.html', function(res) {
+				if (res.charAt(0) != '<') {
+					eval(res);
+				} else {
+					alert(res);
+				}
+				setTimeout("StatusLoop()", 500);
+			});
         }
 
         var snapshotcounter = 0;
